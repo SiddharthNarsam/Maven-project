@@ -28,3 +28,11 @@ criz xfwy anun popm
 
 <role rolename="manager-script"/>
   	<user username="admin" password="1234" roles="manager-script"/>
+
+
+    Copy Artifact Plugin
+    Delivery Pipeline Plugin
+    Deploy to container Plugin
+    Email Extension Plugin
+    Pipeline
+    Build Pipeline Plugin
