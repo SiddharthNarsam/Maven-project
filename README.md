@@ -613,3 +613,15 @@ Step 16: check the docker and git version
 If they are not present, then go to administrative terminal using command 
 “sudo su”
 Then update using the command “sudo apt-get update”
+Step 17: use command “sudo apt-get install docker.io” to install docker
+Step 18: Clone the git repo that has maven project and change to that directory
+Step 19: change to the project directory and check for Dockerfile, if not present create the Dockerfile –
+“nano Dockerfile” and then build the image
+“sudo docker build -t image_name .” name of image:img1
+Step 20: Run the image “sudo docker run -d -p 8081:8080 img1”
+Step 21: Chcek the images and the containers
+Step 22: Take the public IP address from the instances in AWS and open it in chrome along with the port 
+number mapped.
+Public IP- 13.222.21.231
+Port used: 8081
+Use: 13.222.21.231:8081, you will find your application that is deployed
