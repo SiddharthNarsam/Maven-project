@@ -41,3 +41,11 @@ COPY target/*.war /usr/local/tomcat/webapps/ROOT.war
 
 
 https://azeemafirdous2005.github.io/SE-LAB-PDFS/
+
+
+
+dependency>
+    <groupId>KMIT</groupId>	
+     <artifactId>Child-1</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
