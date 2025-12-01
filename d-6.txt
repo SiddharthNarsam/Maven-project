@@ -1,0 +1,283 @@
+week-6:
+1.Define and run multiple interdependent services
+
+Here’s a basic example of a Docker Compose file that runs WordPress and MySQL together:
+
+services:
+  wordpress:
+    image: wordpress:latest
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+    depends_on:
+      - db
+
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    volumes:
+      - db_data:/var/lib/mysql  # Persistent MySQL storage
+
+volumes:
+  db_data:
+
+-----------------------web,db:
+services:
+  wordpress:
+    image: wordpress:latest
+    ports:
+      - "8080:80"      # WordPress → localhost:8080
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+    depends_on:
+      - db
+    volumes:
+      - wordpress_data:/var/www/html
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8081:80"      # Nginx → localhost:8081
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - wordpress
+
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: awordpress
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  wordpress_data:
+  db_data:
+ 
+  ------------------------------------web,db,redis:
+
+version: "3.9"
+
+services:
+  wordpress:
+    image: wordpress:latest
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+
+      # 🔥 Redis Cache Config
+      WORDPRESS_REDIS_HOST: redis
+      WORDPRESS_REDIS_PORT: 6379
+      WORDPRESS_REDIS_DISABLED: 0
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - wordpress_data:/var/www/html
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8081:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - wordpress
+
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    volumes:
+      - db_data:/var/lib/mysql
+
+  redis:
+    image: redis:latest
+    container_name: redis_cache
+    ports:
+      - "6379:6379"   # Optional: expose Redis locally
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+
+volumes:
+  wordpress_data:
+  db_data:
+  redis_data:
+
+
+
+1.Save the file as docker-compose.yml. 
+
+to start: docker compose -f docker-compose.yml up -d  , in git bash 
+when you run this go to nginx/default.conf folder convert to default.conf file using ren default.txt default.conf
+and paste :
+server {
+    listen 80;
+    server_name localhost;
+
+    location / {
+        proxy_pass http://wordpress:80;
+    }
+}
+
+now you can go to localhost and see
+
+to stop : docker compose down 
+
+to scale container : docker-compose up --scale db=2 -d
+
+To check the network : docker network ls
+
+
+to stop : docker compose down 
+
+I.Modify docker-compose.yml to add a Redis cache:
+docker compose -f docker-compose.yml up -d 
+
+Docker compose ps
+Three services (web, db, redis) are listed as running.
+
+
+Task:4 Networking and persistent storage
+1. Update your docker-compose.yml to add a custom network and volume:
+
+version: "3.9"
+
+services:
+  web:
+    image: nginx:latest
+    ports:
+      - "8088:80"
+    networks:
+      - app-net
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: demo
+      POSTGRES_PASSWORD: demo
+      POSTGRES_DB: demo_db
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - app-net
+
+networks:
+  app-net:
+
+volumes:
+  db-data:
+
+run this , stop , start 
+
+Task 5: Faster iteration during development
+1. Create a simple Flask app in app.py:
+
+app.py:
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return "Hello, World! from flask + docker"
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
+
+Dockerfile:
+FROM python:3.9-slim
+
+WORKDIR /app
+
+COPY app.py /app/
+
+RUN pip install flask
+
+CMD ["python", "app.py"]
+
+docker-compose.yml:
+
+version: '3.8'
+
+services:
+  wordpress:
+    image: wordpress:latest
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+    volumes:
+      - wordpress_data:/var/www/html
+    depends_on:
+      - db
+
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+      MYSQL_ROOT_PASSWORD: rootpassword
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  web:
+    image: nginx:latest
+    ports:
+      - "8081:80"
+    depends_on:
+      - wordpress
+
+  postgres:
+    image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydb
+    ports:
+      - "5432:5432"
+
+volumes:
+  wordpress_data:
+  db_data:
+
+
+
+
+
+netstat -ano | findstr :PORT
+
+ taskkill /PID 37864 /F

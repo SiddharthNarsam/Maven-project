@@ -1,0 +1,105 @@
+Minikube Automation Steps:
+
+Step 1: Start Minikube Cluster
+Open your terminal and run the command:
+minikube start  / minikube start --driver=hyperv  / minikube start --driver=docker
+
+1. Use kubectl to interact with the cluster.
+o Install kubectl if not already installed:
+o minikube kubectl -- get pods -A
+
+Step 2: Create and Manage Deployment
+1.Create  an application in Kubernetes:
+
+oCommand:
+kubectl create deployment mynginx --image=nginx
+
+if already created then 
+
+kubectl set image deployment/myngnix nginx=nginx:latest
+
+
+kubectl get deployments
+kubectl get pods
+kubectl describe pods
+
+2.Expose Deployment as a Service:kubectl expose deployment mynginx --type=NodePort --port=80 --target-port=80
+
+Step 3: Scale the Deployment
+Command:Scales the Nginx deployment to 4 replicas (pods).
+kubectl scale deployment mynginx --replicas=4
+kubectl get service mynginx
+
+Step 4: Access the Nginx App
+1.Using Port Forwarding:
+oCommand:
+kubectl port-forward svc/mynginx 8081:80
+
+Access the app via http://localhost:8081.
+
+If Error, use this option, Using Minikube Tunnel:
+oStart the tunnel:
+minikube tunnel
+oRetrieve the service URL:
+minikube service mynginx --url
+oOpen the provided URL in your browser.
+oOpen the kubernets dashboard
+Open the minikube dashboard	
+Minikube dashboard
+
+
+1.Stop Nginx Deployment:
+oCommands:
+kubectl delete deployment mynginx
+kubectl delete service mynginx
+
+2.Stop Minikube (Optional):
+oCommand:
+minikube stop	
+
+3.Delete Minikube Cluster (Optional):
+oCommand:minikube delete
+
+
+Nagios Automation Steps
+Step 1: Pull the Nagios Docker Image
+Open a terminal and run:
+docker pull jasonrivers/nagios:latest
+
+Step 2: Run Nagios
+Command:
+docker run --name nagiosdemo -p 8888:80 jasonrivers/nagios:latest
+
+Step 3: Access Nagios Dashboard
+Open your browser and navigate to:
+http://localhost:8888
+oLogin Credentials:
+Username: nagiosadmin
+Password: nagios
+oOnce logged in, explore:
+Hosts: View systems being monitored.
+Services: Check tasks being monitored (e.g., CPU usage).
+Alerts: Access recent notifications.
+
+Step 4: Monitoring Host Details
+1.Navigate to the Host Information Page:
+oSelect a host from the Hosts menu.
+2.Key Details:
+oHost Status: Indicates if the system is UP or DOWN.
+oMetrics: View CPU usage, memory status, and network activity.
+oActions: Reschedule checks, disable notifications, or schedule downtime.
+
+Step 5: Stop and Remove Nagios
+1.Stop the Container:
+oCommand:
+docker stop nagiosdemo
+2.Delete the Container:
+oCommand:
+docker rm nagiosdemo
+3.Remove the Image (Optional):
+oList images:
+docker images
+oDelete the Nagios image:
+docker rmi jasonrivers/nagios:latest
+
+4. Observe the docker containers in DockerHub, we can see the latest Nagios Installed running on port:8888

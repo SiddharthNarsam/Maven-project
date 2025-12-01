@@ -1,0 +1,205 @@
+Working with Docker CLI Commands:
+
+Docker CLI Commands with redis:
+
+Step 1: Pull the redis Image
+docker pull redis
+
+Step 2: Run a Redis Container
+docker run --name my-redis -d redis
+
+Step 3: Check Running Containers
+docker ps
+
+Step 4: Access Redis
+docker exec -it my-redis redis -cli
+
+Example Redis Commands:
+127.0.0.1:6379> SET name "Alice"
+OK
+127.0.0.1:6379> GET name
+"Alice"
+
+Step 5: Stop the Redis Container
+docker stop my-redis
+
+Step 6: Restart the Redis Container
+docker start my-redis
+
+Step 7: Remove the Redis Container
+docker rm my-redis
+
+Step 8: Remove the Redis Image
+docker rmi redis
+
+
+2.Working with Dockerfile
+A Dockerfile is a text file with instructions to create a custom Docker image.
+
+Step 1: Set Up Your Folder
+1. Windows:
+o Create a folder like C:\DockerProjects\Redis.
+o Open Git Bash and navigate to the folder:
+cd /c/DockerProjects/Redis
+
+Step 2: Write the Dockerfile
+1. Inside the folder, create a file named Dockerfile (no extension).
+2. Add the following content:
+FROM redis:latest
+CMD ["redis-server"]
+ cmd :
+ ren Dockerfile.txt Dockerfile
+
+ Docker Commands (Step-by-step):
+1. docker build -t redisnew .
+
+2. docker run --name myredisnew -d redisnew
+
+3. docker ps
+
+4. docker stop myredisnew
+
+5. docker login
+
+6. docker ps -a
+
+7. docker commit 0e993d2009a1 budarajumadhurika/redis1
+
+8. docker images
+
+9. docker push budarajumadhurika/redis1
+
+10. docker rm 0e993d2009a1
+
+11. docker rmi budarajumadhurika/redis1
+
+12. docker ps -a
+13. docker logout
+
+14. docker pull budarajumadhurika/redis1
+
+15. docker run --name myredis -d budarajumadhurika/redis1
+
+16. docker exec -it myredis redis-cli
+
+17. SET name "Abcdef"
+
+18. GET name
+
+
+ubuntu :
+
+# ----------------------------------------
+# 1. Pull Ubuntu Image
+# ----------------------------------------
+docker pull ubuntu
+
+# ----------------------------------------
+# 2. Run Ubuntu Container (interactive)
+# ----------------------------------------
+docker run -it ubuntu bash
+
+# ----------------------------------------
+# 3. Run Ubuntu with a name
+# ----------------------------------------
+docker run -it --name myubuntu ubuntu bash
+
+# ----------------------------------------
+# 4. Update packages inside Ubuntu container
+# (run inside the container)
+# ----------------------------------------
+apt update
+apt install -y curl git python3 vim
+
+# ----------------------------------------
+# 5. Exit the container
+# ----------------------------------------
+exit
+
+# ----------------------------------------
+# 6. Start the container again
+# ----------------------------------------
+docker start myubuntu
+
+# ----------------------------------------
+# 7. Exec into container (open terminal)
+# ----------------------------------------
+docker exec -it myubuntu bash
+
+# ----------------------------------------
+# 8. Commit container changes to a new image
+# ----------------------------------------
+docker commit myubuntu ubuntu-custom:v1
+
+# ----------------------------------------
+# 9. View created image
+# ----------------------------------------
+docker images
+
+# ----------------------------------------
+# 10. Run the new custom Ubuntu image
+# ----------------------------------------
+docker run -it ubuntu-custom:v1 bash
+
+# ========================================================
+# 11. CREATE A DOCKERFILE FOR A CUSTOM UBUNTU IMAGE
+# Make a file named: Dockerfile
+# ========================================================
+# Example Dockerfile content:
+# ---------------------------
+# FROM ubuntu:latest
+# RUN apt update && apt install -y python3 curl git vim
+# CMD ["bash"]
+# ---------------------------
+
+# ----------------------------------------
+# 12. Build image from Dockerfile
+# ----------------------------------------
+docker build -t myubuntu:v2 .
+
+# ----------------------------------------
+# 13. Run your custom Ubuntu image
+# ----------------------------------------
+docker run -it myubuntu:v2 bash
+
+# ----------------------------------------
+# 14. List all containers
+# ----------------------------------------
+docker ps -a
+
+# ----------------------------------------
+# 15. Remove a container
+# ----------------------------------------
+docker rm <container_name>
+
+# ----------------------------------------
+# 16. Remove an image
+# ----------------------------------------
+docker rmi <image_name>
+
+# ----------------------------------------
+# 17. Clean unused images
+# ----------------------------------------
+docker image prune -a
+
+# ----------------------------------------
+# 18. See logs of a container
+# ----------------------------------------
+docker logs <container_name>
+
+# ----------------------------------------
+# 19. Create and inspect volumes (optional)
+# ----------------------------------------
+docker volume create myvolume
+docker volume ls
+docker volume inspect myvolume
+
+# ----------------------------------------
+# 20. Create a custom network (optional)
+# ----------------------------------------
+docker network create mynet
+docker network ls
+docker network inspect mynet
+
+
+
